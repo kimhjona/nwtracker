@@ -86,7 +86,7 @@ export const Input = forwardRef(function Input(
           // Disabled state
           'data-[disabled]:border-zinc-950/20 dark:data-[hover]:data-[disabled]:border-white/15 data-[disabled]:dark:border-white/15 data-[disabled]:dark:bg-white/[2.5%]',
           // System icons
-          'dark:[color-:dark]',
+          'dark:[color-scheme:dark]',
         ])}
       />
     </span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Navigation } from "@/components/navigation";
+import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/tw-components/button";
 import { Input } from "@/components/tw-components/input";
 import { useState, FormEvent } from "react";
@@ -65,7 +65,7 @@ export default function SignUp() {
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight">
-            Sign up for NWTracker
+            Sign up for NW Tracker
           </h2>
         </div>
 

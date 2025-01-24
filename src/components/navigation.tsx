@@ -1,6 +1,12 @@
 "use client";
 
-import { Navbar, NavbarItem, NavbarSection } from "./tw-components/navbar";
+import {
+  Navbar,
+  NavbarDivider,
+  NavbarItem,
+  NavbarLabel,
+  NavbarSection,
+} from "./tw-components/navbar";
 import { usePathname } from "next/navigation";
 
 export function Navigation() {
@@ -8,8 +14,10 @@ export function Navigation() {
 
   return (
     <>
-      <Navbar className="justify-between">
+      <Navbar className="justify-between px-4">
         <NavbarSection>
+          <NavbarLabel>NW Tracker</NavbarLabel>
+          <NavbarDivider />
           <NavbarItem current={pathname == Routes.Home} href={Routes.Home}>
             Home
           </NavbarItem>
@@ -18,8 +26,8 @@ export function Navigation() {
           <NavbarItem current={pathname == Routes.SignUp} href={Routes.SignUp}>
             Sign Up
           </NavbarItem>
-          <NavbarItem current={pathname == Routes.SignIn} href={Routes.SignIn}>
-            Sign In
+          <NavbarItem current={pathname == Routes.Login} href={Routes.Login}>
+            Log In
           </NavbarItem>
         </NavbarSection>
       </Navbar>
@@ -30,5 +38,5 @@ export function Navigation() {
 enum Routes {
   Home = "/",
   SignUp = "/signup",
-  SignIn = "/signin",
+  Login = "/login",
 }

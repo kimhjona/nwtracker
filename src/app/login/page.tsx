@@ -1,15 +1,15 @@
-import { Navigation } from "@/components/navigation";
+import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/tw-components/button";
 import { Input } from "@/components/tw-components/input";
 
-export default function SignIn() {
+export default function LogIn() {
   return (
     <>
       <Navigation />
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight">
-            Sign in to Your Account
+            Log in to Your Account
           </h2>
         </div>
 
@@ -63,7 +63,7 @@ export default function SignIn() {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign in
+                Log in
               </Button>
             </div>
           </form>

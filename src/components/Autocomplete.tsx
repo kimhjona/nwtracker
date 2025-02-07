@@ -23,6 +23,7 @@ type Person = {
 
 type AutocompleteProps = {
   onSelect?: (item: Person | null) => void;
+  onChange?: (text: string) => void;
 };
 
 const items = [
@@ -30,7 +31,7 @@ const items = [
   { name: "Microsoft", username: "MSFT" },
 ];
 
-export default function Autocomplete({ onSelect }: AutocompleteProps) {
+export default function Autocomplete({ onSelect, onChange }: AutocompleteProps) {
   const [query, setQuery] = useState("");
   const [selectedItem, setSelectedItem] = useState<Person | null>(null);
 
@@ -47,9 +48,15 @@ export default function Autocomplete({ onSelect }: AutocompleteProps) {
     onSelect?.(item);
   };
 
+  const onInputChange = (text: string) => {
+    setQuery(text);
+    onChange?.(text);
+  }
+
+
   return (
     <Combobox as="div" value={selectedItem} onChange={handleChange}>
-      <div className="relative mt-2">
+      <div className="relative">
         <InputGroup>
           <MagnifyingGlassIcon
             data-slot="icon"
@@ -73,7 +80,7 @@ export default function Autocomplete({ onSelect }: AutocompleteProps) {
               // Padding for the search icon
               "pl-10 sm:pl-8"
             )}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => onInputChange(event.target.value)}
             displayValue={(item: Person) => item?.name}
             placeholder="Search..."
           />

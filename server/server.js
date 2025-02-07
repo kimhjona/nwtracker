@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import bcrypt from "bcrypt";
 import cors from "cors";
@@ -10,10 +11,12 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // In production
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:3000', // Your Next.js frontend URL
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Your Next.js frontend URL
+    credentials: true,
+  })
+);
 
 // Simple in-memory storage (replace with a real database in production)
 let users = [];
@@ -25,29 +28,29 @@ app.post("/api/signup", async (req, res) => {
 
     // Validation
     if (!email || !password) {
-      return res.status(400).json({ 
-        error: "Email and password are required" 
+      return res.status(400).json({
+        error: "Email and password are required",
       });
     }
 
     // Validate email format
     if (!validator.validate(email)) {
-      return res.status(400).json({ 
-        error: "Invalid email format" 
+      return res.status(400).json({
+        error: "Invalid email format",
       });
     }
 
     // Check if user already exists
-    if (users.some(user => user.email === email)) {
-      return res.status(409).json({ 
-        error: "User already exists" 
+    if (users.some((user) => user.email === email)) {
+      return res.status(409).json({
+        error: "User already exists",
       });
     }
 
     // Validate password strength (minimum 8 characters)
     if (password.length < 8) {
-      return res.status(400).json({ 
-        error: "Password must be at least 8 characters long" 
+      return res.status(400).json({
+        error: "Password must be at least 8 characters long",
       });
     }
 
@@ -59,7 +62,7 @@ app.post("/api/signup", async (req, res) => {
       id: users.length + 1,
       email,
       password: hashedPassword,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     // Add user to our 'database'
@@ -69,7 +72,7 @@ app.post("/api/signup", async (req, res) => {
     const token = jwt.sign(
       { userId: newUser.id, email: newUser.email },
       JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: "24h" }
     );
 
     // Return success with token
@@ -79,14 +82,13 @@ app.post("/api/signup", async (req, res) => {
       user: {
         id: newUser.id,
         email: newUser.email,
-        createdAt: newUser.createdAt
-      }
+        createdAt: newUser.createdAt,
+      },
     });
-
   } catch (error) {
-    console.error('Signup error:', error);
-    res.status(500).json({ 
-      error: "Error creating user" 
+    console.error("Signup error:", error);
+    res.status(500).json({
+      error: "Error creating user",
     });
   }
 });
@@ -97,21 +99,19 @@ app.post("/api/login", async (req, res) => {
     const { email, password } = req.body;
 
     // Find user
-    const user = users.find(u => u.email === email);
+    const user = users.find((u) => u.email === email);
 
     // Check if user exists and password is correct
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ 
-        error: "Invalid credentials" 
+      return res.status(401).json({
+        error: "Invalid credentials",
       });
     }
 
     // Create JWT token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '24h' }
-    );
+    const token = jwt.sign({ userId: user.id, email: user.email }, JWT_SECRET, {
+      expiresIn: "24h",
+    });
 
     // Return success with token
     res.json({
@@ -120,22 +120,21 @@ app.post("/api/login", async (req, res) => {
       user: {
         id: user.id,
         email: user.email,
-        createdAt: user.createdAt
-      }
+        createdAt: user.createdAt,
+      },
     });
-
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ 
-      error: "Error during login" 
+    console.error("Login error:", error);
+    res.status(500).json({
+      error: "Error during login",
     });
   }
 });
 
 // Middleware to protect routes (example of how to verify JWT)
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ error: "Authentication required" });
@@ -152,15 +151,32 @@ const authenticateToken = (req, res, next) => {
 
 // Example protected route
 app.get("/api/user", authenticateToken, (req, res) => {
-  const user = users.find(u => u.id === req.user.userId);
+  const user = users.find((u) => u.id === req.user.userId);
   if (!user) {
     return res.status(404).json({ error: "User not found" });
   }
   res.json({
     id: user.id,
     email: user.email,
-    createdAt: user.createdAt
+    createdAt: user.createdAt,
   });
+});
+
+app.post("/api/lookup", async (req, res) => {
+  console.log("lookup");
+  try {
+    const { text } = req.body;
+
+    const url = `https://finnhub.io/api/v1/search?q=${text}&token=${process.env.API_KEY}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    console.error("Lookup error:", error);
+    res
+      .status(500)
+      .json({ error: error.message || "Error during symbol lookup" });
+  }
 });
 
 app.listen(port, () => {
